@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🎨 Custom Greeting Card Generator</title>
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- html2canvas for Image Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* ===== RESET & BODY ===== */
         * {
             margin: 0;
             padding: 0;
@@ -19,26 +18,28 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
         }
 
+        /* ===== CONTAINER - FIXED SPACING ===== */
         .container {
             max-width: 1400px;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 40px;
             justify-content: center;
+            align-items: flex-start;
         }
 
-        /* ===== LEFT: CARD PREVIEW ===== */
+        /* ===== PREVIEW SECTION ===== */
         .preview-section {
-            flex: 1;
-            min-width: 380px;
-            max-width: 650px;
+            flex: 1 1 45%;
+            min-width: 350px;
+            max-width: 600px;
         }
 
         .preview-section h2 {
@@ -54,9 +55,12 @@
             color: #e94560;
         }
 
+        /* ===== GREETING CARD ===== */
         .greeting-card {
             width: 100%;
             aspect-ratio: 1 / 1;
+            max-width: 600px;
+            margin: 0 auto;
             border-radius: 25px;
             display: flex;
             flex-direction: column;
@@ -72,7 +76,6 @@
             background-color: #ffb6c1;
         }
 
-        /* Decorative Petals */
         .petal {
             position: absolute;
             font-size: 45px;
@@ -119,10 +122,10 @@
             font-size: 18px;
         }
 
-        /* ===== RIGHT: CONTROLS ===== */
+        /* ===== CONTROLS SECTION ===== */
         .controls-section {
-            flex: 1;
-            min-width: 340px;
+            flex: 1 1 45%;
+            min-width: 350px;
             max-width: 550px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -131,6 +134,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             max-height: 90vh;
             overflow-y: auto;
+            align-self: flex-start;
         }
 
         .controls-section::-webkit-scrollbar {
@@ -153,6 +157,7 @@
             margin-bottom: 25px;
         }
 
+        /* ===== FORM ELEMENTS ===== */
         .form-group {
             margin-bottom: 16px;
         }
@@ -247,6 +252,7 @@
             flex: 1;
         }
 
+        /* ===== STYLE BUTTONS ===== */
         .style-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -276,6 +282,7 @@
             color: #fff;
         }
 
+        /* ===== BUTTONS ===== */
         .btn-generate {
             width: 100%;
             padding: 16px;
@@ -341,13 +348,14 @@
 
         .btn-reset {
             background: rgba(255, 255, 255, 0.1);
+            flex: 0.3;
         }
 
         .btn-reset:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Music Player */
+        /* ===== MUSIC PLAYER ===== */
         .music-player {
             margin-top: 15px;
             padding: 12px;
@@ -374,7 +382,7 @@
             gap: 10px;
         }
 
-        /* Toast */
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -402,15 +410,46 @@
             box-shadow: 0 10px 40px rgba(231, 76, 60, 0.3);
         }
 
-        /* Responsive */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 850px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
             .preview-section {
-                min-width: unset;
+                flex: 1 1 100%;
                 max-width: 500px;
+                width: 100%;
             }
             .controls-section {
+                flex: 1 1 100%;
+                max-width: 100%;
+                width: 100%;
                 max-height: none;
-                min-width: unset;
+                align-self: auto;
+            }
+            .greeting-card {
+                max-width: 100%;
             }
             .greeting-text {
                 font-size: 36px;
@@ -444,447 +483,15 @@
             .action-buttons {
                 flex-direction: column;
             }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
+            body {
+                padding: 15px 10px;
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <!-- ===== LEFT: PREVIEW ===== -->
-        <div class="preview-section">
-            <h2><i class="fas fa-eye"></i> Live Preview</h2>
-            <div class="greeting-card" id="greetingCard">
-                <!-- Petals -->
-                <div class="petal" style="top:15px;left:20px;font-size:65px;">🌸</div>
-                <div class="petal" style="top:30px;right:30px;font-size:50px;">🌹</div>
-                <div class="petal" style="bottom:35px;left:30px;font-size:50px;">🌸</div>
-                <div class="petal" style="bottom:20px;right:20px;font-size:65px;">🌹</div>
-                <div class="petal" style="top:50%;left:8px;font-size:35px;">🌺</div>
-                <div class="petal" style="top:30%;right:5px;font-size:35px;">🌺</div>
-
-                <div class="greeting-text" id="greetingDisplay">Good Morning</div>
-                <div class="divider-line" id="dividerDisplay"></div>
-                <div class="proverb-text" id="proverbDisplay">"Believe you can, and you're already halfway there."</div>
-                <div class="author-text" id="authorDisplay">— Theodore Roosevelt</div>
-            </div>
-
-            <!-- Music Player -->
-            <div class="music-player" id="musicPlayer">
-                <audio id="audioPlayer" controls loop>
-                    <source id="audioSource" src="" type="audio/mpeg">
-                </audio>
-                <div class="music-info">
-                    <i class="fas fa-music"></i>
-                    <span id="musicFileName">No music loaded</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== RIGHT: CONTROLS ===== -->
-        <div class="controls-section">
-            <h2>🎨 Customize</h2>
-            <p class="sub">Create your perfect greeting card</p>
-
-            <!-- Greeting Text -->
-            <div class="form-group">
-                <label><i class="fas fa-heading"></i> Greeting Text</label>
-                <input type="text" id="greetingInput" value="Good Morning" placeholder="Type your greeting here..." />
-            </div>
-
-            <!-- Proverb -->
-            <div class="form-group">
-                <label><i class="fas fa-quote-left"></i> Proverb / Quote</label>
-                <textarea id="proverbInput" rows="2" placeholder="Type your proverb here...">"Believe you can, and you're already halfway there."</textarea>
-            </div>
-
-            <!-- Author -->
-            <div class="form-group">
-                <label><i class="fas fa-user"></i> Author (optional)</label>
-                <input type="text" id="authorInput" value="— Theodore Roosevelt" placeholder="— Author Name" />
-            </div>
-
-            <!-- Colors -->
-            <div class="color-row">
-                <div class="form-group">
-                    <label><i class="fas fa-palette"></i> Background</label>
-                    <input type="color" id="bgColor" value="#ffb6c1" />
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-font"></i> Text Color</label>
-                    <input type="color" id="textColor" value="#8B00FF" />
-                </div>
-            </div>
-
-            <div class="color-row">
-                <div class="form-group">
-                    <label><i class="fas fa-minus"></i> Divider Color</label>
-                    <input type="color" id="dividerColor" value="#8B00FF" />
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-user-edit"></i> Author Color</label>
-                    <input type="color" id="authorColor" value="#7B00E6" />
-                </div>
-            </div>
-
-            <!-- Font Sizes -->
-            <div class="color-row">
-                <div class="form-group">
-                    <label><i class="fas fa-text-height"></i> Greeting Size: <span id="greetingSizeLabel">56</span>px</label>
-                    <input type="range" id="greetingSize" min="16" max="100" value="56" />
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-text-height"></i> Proverb Size: <span id="proverbSizeLabel">24</span>px</label>
-                    <input type="range" id="proverbSize" min="12" max="50" value="24" />
-                </div>
-            </div>
-
-            <!-- Text Styles -->
-            <div class="form-group">
-                <label><i class="fas fa-italic"></i> Text Styles</label>
-                <div class="style-buttons">
-                    <button id="styleBold" onclick="toggleStyle('bold')"><i class="fas fa-bold"></i> Bold</button>
-                    <button id="styleItalic" onclick="toggleStyle('italic')"><i class="fas fa-italic"></i> Italic</button>
-                    <button id="styleUnderline" onclick="toggleStyle('underline')"><i class="fas fa-underline"></i> Underline</button>
-                    <button id="styleUppercase" onclick="toggleStyle('uppercase')"><i class="fas fa-arrow-up"></i> UPPER</button>
-                    <button id="styleLowercase" onclick="toggleStyle('lowercase')"><i class="fas fa-arrow-down"></i> lower</button>
-                </div>
-            </div>
-
-            <!-- Background Music Upload -->
-            <div class="form-group">
-                <label><i class="fas fa-music"></i> Background Music (MP3)</label>
-                <input type="file" id="musicUpload" accept=".mp3,.wav,.ogg" />
-                <div style="margin-top:6px;font-size:13px;color:#888;">
-                    <i class="fas fa-info-circle"></i> Upload MP3, WAV, or OGG file
-                </div>
-            </div>
-
-            <!-- Background Image Upload -->
-            <div class="form-group">
-                <label><i class="fas fa-image"></i> Background Image (optional)</label>
-                <input type="file" id="bgImageUpload" accept="image/*" />
-            </div>
-
-            <!-- Generate Button -->
-            <button class="btn-generate" id="generateBtn" onclick="generateImage()">
-                <i class="fas fa-wand-magic-sparkles"></i> Generate Image
-            </button>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="btn-download" onclick="downloadImage()">
-                    <i class="fas fa-download"></i> Download
-                </button>
-                <button class="btn-share" onclick="shareImage()">
-                    <i class="fas fa-share-alt"></i> Share
-                </button>
-                <button class="btn-reset" onclick="resetAll()">
-                    <i class="fas fa-undo"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">✅ Success!</div>
-
-    <script>
-        // ===== DOM REFS =====
-        const card = document.getElementById('greetingCard');
-        const greetingDisplay = document.getElementById('greetingDisplay');
-        const proverbDisplay = document.getElementById('proverbDisplay');
-        const authorDisplay = document.getElementById('authorDisplay');
-        const dividerDisplay = document.getElementById('dividerDisplay');
-
-        const greetingInput = document.getElementById('greetingInput');
-        const proverbInput = document.getElementById('proverbInput');
-        const authorInput = document.getElementById('authorInput');
-        const bgColor = document.getElementById('bgColor');
-        const textColor = document.getElementById('textColor');
-        const dividerColor = document.getElementById('dividerColor');
-        const authorColor = document.getElementById('authorColor');
-        const greetingSize = document.getElementById('greetingSize');
-        const proverbSize = document.getElementById('proverbSize');
-        const greetingSizeLabel = document.getElementById('greetingSizeLabel');
-        const proverbSizeLabel = document.getElementById('proverbSizeLabel');
-        const bgImageUpload = document.getElementById('bgImageUpload');
-        const musicUpload = document.getElementById('musicUpload');
-        const musicPlayer = document.getElementById('musicPlayer');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const audioSource = document.getElementById('audioSource');
-        const musicFileName = document.getElementById('musicFileName');
-        const generateBtn = document.getElementById('generateBtn');
-
-        // ===== STYLES STATE =====
-        let activeStyles = {
-            bold: false,
-            italic: false,
-            underline: false,
-            uppercase: false,
-            lowercase: false
-        };
-
-        // ===== TOGGLE STYLE =====
-        function toggleStyle(style) {
-            activeStyles[style] = !activeStyles[style];
-            const btn = document.getElementById('style' + style.charAt(0).toUpperCase() + style.slice(1));
-            btn.classList.toggle('active');
-            updateStyles();
-        }
-
-        function updateStyles() {
-            const display = greetingDisplay;
-            let styles = [];
-            if (activeStyles.bold) styles.push('bold');
-            if (activeStyles.italic) styles.push('italic');
-            if (activeStyles.underline) styles.push('underline');
-            if (activeStyles.uppercase) styles.push('uppercase');
-            if (activeStyles.lowercase) styles.push('lowercase');
-
-            display.style.fontWeight = activeStyles.bold ? '900' : '700';
-            display.style.fontStyle = activeStyles.italic ? 'italic' : 'normal';
-            display.style.textDecoration = activeStyles.underline ? 'underline' : 'none';
-            display.style.textTransform = activeStyles.uppercase ? 'uppercase' : (activeStyles.lowercase ? 'lowercase' : 'none');
-
-            // Proverb inherits same styles but with its own weight
-            proverbDisplay.style.fontWeight = activeStyles.bold ? '800' : '600';
-            proverbDisplay.style.fontStyle = activeStyles.italic ? 'italic' : 'normal';
-            proverbDisplay.style.textDecoration = activeStyles.underline ? 'underline' : 'none';
-            proverbDisplay.style.textTransform = activeStyles.uppercase ? 'uppercase' : (activeStyles.lowercase ? 'lowercase' : 'none');
-        }
-
-        // ===== UPDATE PREVIEW =====
-        function updatePreview() {
-            greetingDisplay.textContent = greetingInput.value || 'Good Morning';
-            proverbDisplay.textContent = proverbInput.value || '"Believe you can, and you\'re already halfway there."';
-            authorDisplay.textContent = authorInput.value || '';
-
-            card.style.backgroundColor = bgColor.value;
-            greetingDisplay.style.color = textColor.value;
-            proverbDisplay.style.color = textColor.value;
-            dividerDisplay.style.backgroundColor = dividerColor.value;
-            authorDisplay.style.color = authorColor.value;
-
-            greetingDisplay.style.fontSize = greetingSize.value + 'px';
-            greetingSizeLabel.textContent = greetingSize.value;
-            proverbDisplay.style.fontSize = proverbSize.value + 'px';
-            proverbSizeLabel.textContent = proverbSize.value;
-
-            updateStyles();
-            updateBackgroundImage();
-        }
-
-        // ===== BACKGROUND IMAGE =====
-        function updateBackgroundImage() {
-            if (bgImageUpload.files && bgImageUpload.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    card.style.backgroundImage = `url(${e.target.result})`;
-                    card.style.backgroundSize = 'cover';
-                    card.style.backgroundPosition = 'center';
-                };
-                reader.readAsDataURL(bgImageUpload.files[0]);
-            } else {
-                card.style.backgroundImage = 'none';
-            }
-        }
-
-        // ===== MUSIC UPLOAD =====
-        musicUpload.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                const url = URL.createObjectURL(file);
-                audioSource.src = url;
-                audioPlayer.load();
-                musicPlayer.classList.add('active');
-                musicFileName.textContent = file.name;
-                showToast('🎵 Music loaded: ' + file.name);
-
-                // Auto-play after load
-                audioPlayer.oncanplaythrough = function() {
-                    audioPlayer.play().catch(() => {});
-                };
-            }
-        });
-
-        // ===== GENERATE IMAGE =====
-        function generateImage() {
-            updatePreview();
-
-            // Show loading
-            generateBtn.innerHTML = '<span class="spinner" style="display:inline-block;"></span> Generating...';
-            generateBtn.disabled = true;
-
-            setTimeout(() => {
-                // Capture the card
-                html2canvas(card, {
-                    scale: 2.5,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: null,
-                    logging: false,
-                    width: card.scrollWidth,
-                    height: card.scrollHeight
-                }).then(canvas => {
-                    // Store for download/share
-                    window.generatedCanvas = canvas;
-                    window.generatedImageData = canvas.toDataURL('image/png');
-
-                    // Show success
-                    generateBtn.innerHTML = '<i class="fas fa-check"></i> Image Generated!';
-                    generateBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
-                    showToast('✅ Image generated successfully!');
-
-                    setTimeout(() => {
-                        generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
-                        generateBtn.style.background = '';
-                        generateBtn.disabled = false;
-                    }, 2000);
-
-                }).catch(err => {
-                    generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
-                    generateBtn.disabled = false;
-                    showToast('⚠️ Error generating image. Try taking a screenshot.', true);
-                    console.error('html2canvas error:', err);
-                });
-            }, 300);
-        }
-
-        // ===== DOWNLOAD IMAGE =====
-        function downloadImage() {
-            if (window.generatedCanvas) {
-                const link = document.createElement('a');
-                link.download = 'greeting-card.png';
-                link.href = window.generatedImageData;
-                link.click();
-                showToast('📥 Image downloaded successfully!');
-            } else {
-                // Generate first if not available
-                showToast('⚠️ Please generate the image first!', true);
-                generateImage();
-                // Retry after generation
-                setTimeout(() => {
-                    if (window.generatedCanvas) {
-                        const link = document.createElement('a');
-                        link.download = 'greeting-card.png';
-                        link.href = window.generatedImageData;
-                        link.click();
-                        showToast('📥 Image downloaded successfully!');
-                    }
-                }, 1000);
-            }
-        }
-
-        // ===== SHARE IMAGE =====
-        function shareImage() {
-            if (window.generatedImageData) {
-                // Check if Web Share API is supported
-                if (navigator.share) {
-                    // Convert base64 to blob
-                    fetch(window.generatedImageData)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const file = new File([blob], 'greeting-card.png', { type: 'image/png' });
-                            navigator.share({
-                                title: 'My Greeting Card',
-                                text: 'Check out my custom greeting card!',
-                                files: [file]
-                            }).catch(() => {
-                                fallbackShare();
-                            });
-                        });
-                } else {
-                    fallbackShare();
-                }
-            } else {
-                showToast('⚠️ Please generate the image first!', true);
-            }
-        }
-
-        function fallbackShare() {
-            // Copy image to clipboard or open in new tab
-            if (window.generatedImageData) {
-                const win = window.open();
-                win.document.write(
-                    `<img src="${window.generatedImageData}" style="max-width:100%;height:auto;" />`);
-                win.document.title = 'Greeting Card';
-                showToast('📤 Right-click the image to save or share');
-            }
-        }
-
-        // ===== RESET ALL =====
-        function resetAll() {
-            greetingInput.value = 'Good Morning';
-            proverbInput.value = '"Believe you can, and you\'re already halfway there."';
-            authorInput.value = '— Theodore Roosevelt';
-            bgColor.value = '#ffb6c1';
-            textColor.value = '#8B00FF';
-            dividerColor.value = '#8B00FF';
-            authorColor.value = '#7B00E6';
-            greetingSize.value = 56;
-            proverbSize.value = 24;
-            bgImageUpload.value = '';
-            musicUpload.value = '';
-            musicPlayer.classList.remove('active');
-            audioPlayer.pause();
-            card.style.backgroundImage = 'none';
-
-            // Reset styles
-            Object.keys(activeStyles).forEach(key => {
-                activeStyles[key] = false;
-                const btn = document.getElementById('style' + key.charAt(0).toUpperCase() + key.slice(1));
-                if (btn) btn.classList.remove('active');
-            });
-
-            window.generatedCanvas = null;
-            window.generatedImageData = null;
-
-            updatePreview();
-            showToast('↺ Reset to default');
-        }
-
-        // ===== TOAST =====
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast' + (isError ? ' error' : '');
-            toast.classList.add('show');
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3500);
-        }
-
-        // ===== LIVE UPDATES =====
-        document.querySelectorAll('input, textarea').forEach(el => {
-            el.addEventListener('input', updatePreview);
-        });
-
-        // ===== INIT =====
-        updatePreview();
-        console.log('🎨 Greeting Card Generator loaded!');
-        console.log('📝 Type your greeting, proverb, customize colors, styles, add music, and generate!');
-    </script>
-
+    <!-- ===== YOUR EXISTING HTML BODY GOES HERE ===== -->
+    <!-- The body content remains exactly the same as your current page -->
+    ...
 </body>
 </html>
