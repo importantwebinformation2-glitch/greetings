@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* ===== RESET & BODY ===== */
         * {
             margin: 0;
             padding: 0;
@@ -24,22 +23,20 @@
             align-items: flex-start;
         }
 
-        /* ===== CONTAINER - FIXED SPACING ===== */
         .container {
             max-width: 1400px;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
-            gap: 40px;
+            gap: 50px;
             justify-content: center;
             align-items: flex-start;
         }
 
-        /* ===== PREVIEW SECTION ===== */
         .preview-section {
-            flex: 1 1 45%;
+            flex: 1 1 40%;
             min-width: 350px;
-            max-width: 600px;
+            max-width: 550px;
         }
 
         .preview-section h2 {
@@ -55,12 +52,11 @@
             color: #e94560;
         }
 
-        /* ===== GREETING CARD ===== */
         .greeting-card {
             width: 100%;
             aspect-ratio: 1 / 1;
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 550px;
+            margin: 0 auto 20px;
             border-radius: 25px;
             display: flex;
             flex-direction: column;
@@ -72,7 +68,6 @@
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
             border: 3px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
             background-color: #ffb6c1;
         }
 
@@ -122,11 +117,10 @@
             font-size: 18px;
         }
 
-        /* ===== CONTROLS SECTION ===== */
         .controls-section {
-            flex: 1 1 45%;
+            flex: 1 1 40%;
             min-width: 350px;
-            max-width: 550px;
+            max-width: 500px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             padding: 30px;
@@ -157,7 +151,6 @@
             margin-bottom: 25px;
         }
 
-        /* ===== FORM ELEMENTS ===== */
         .form-group {
             margin-bottom: 16px;
         }
@@ -252,7 +245,6 @@
             flex: 1;
         }
 
-        /* ===== STYLE BUTTONS ===== */
         .style-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -263,92 +255,571 @@
             padding: 8px 16px;
             background: rgba(255, 255, 255, 0.06);
             border: 2px solid rgba(255, 255, 255, 0.1);
-<style>
-    /* ===== CONTAINER - FIXED SPACING ===== */
-    .container {
-        max-width: 1400px;
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 50px; /* INCREASED SPACE */
-        justify-content: center;
-        align-items: flex-start; /* KEY FIX */
-        padding: 20px;
-    }
+            border-radius: 10px;
+            color: #ddd;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
 
-    /* ===== PREVIEW SECTION ===== */
-    .preview-section {
-        flex: 1 1 40%;
-        min-width: 350px;
-        max-width: 550px;
-    }
+        .style-buttons button:hover {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.1);
+        }
 
-    /* ===== CONTROLS SECTION ===== */
-    .controls-section {
-        flex: 1 1 40%;
-        min-width: 350px;
-        max-width: 500px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        padding: 30px;
-        border-radius: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        max-height: 90vh;
-        overflow-y: auto;
-        align-self: flex-start; /* KEY FIX */
-        margin-top: 50px; /* PUSHES IT DOWN */
-    }
+        .style-buttons button.active {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.2);
+            color: #fff;
+        }
 
-    /* ===== GREETING CARD ===== */
-    .greeting-card {
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        max-width: 550px;
-        margin: 0 auto 20px; /* BOTTOM MARGIN */
-        border-radius: 25px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 40px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-        border: 3px solid rgba(255, 255, 255, 0.08);
-        transition: all 0.3s ease;
-        background-color: #ffb6c1;
-    }
+        .btn-generate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #e94560, #c23152);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 850px) {
-        .container {
-            flex-direction: column;
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.3);
+        }
+
+        .btn-generate i {
+            margin-right: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
             align-items: center;
-            gap: 30px;
+            justify-content: center;
+            gap: 8px;
         }
-        .preview-section {
-            flex: 1 1 100%;
-            max-width: 500px;
+
+        .btn-download {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .btn-share:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.1);
+            flex: 0.3;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .music-player {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .music-player.active {
+            display: block;
+        }
+
+        .music-player audio {
             width: 100%;
+            border-radius: 10px;
         }
-        .controls-section {
-            flex: 1 1 100%;
-            max-width: 100%;
-            width: 100%;
-            max-height: none;
-            margin-top: 0;
-            align-self: auto;
+
+        .music-info {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .greeting-card {
-            max-width: 100%;
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2ecc71;
+            color: #fff;
+            padding: 15px 35px;
+            border-radius: 15px;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(46, 204, 113, 0.3);
+            opacity: 0;
+            transition: all 0.5s ease;
+            pointer-events: none;
+            z-index: 999;
         }
-    }
-</style>
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.error {
+            background: #e74c3c;
+            box-shadow: 0 10px 40px rgba(231, 76, 60, 0.3);
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            .preview-section {
+                flex: 1 1 100%;
+                max-width: 500px;
+                width: 100%;
+            }
+            .controls-section {
+                flex: 1 1 100%;
+                max-width: 100%;
+                width: 100%;
+                max-height: none;
+                align-self: auto;
+            }
+            .greeting-card {
+                max-width: 100%;
+            }
+            .greeting-text {
+                font-size: 36px;
+            }
+            .proverb-text {
+                font-size: 18px;
+            }
+            .greeting-card {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .greeting-text {
+                font-size: 26px;
+            }
+            .proverb-text {
+                font-size: 15px;
+            }
+            .greeting-card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+            .controls-section {
+                padding: 18px;
+            }
+            .color-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            body {
+                padding: 15px 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- ===== YOUR EXISTING HTML BODY GOES HERE ===== -->
-    <!-- The body content remains exactly the same as your current page -->
-    ...
+
+    <div class="container">
+        <!-- ===== LEFT: PREVIEW ===== -->
+        <div class="preview-section">
+            <h2><i class="fas fa-eye"></i> Live Preview</h2>
+            <div class="greeting-card" id="greetingCard">
+                <div class="petal" style="top:15px;left:20px;font-size:65px;">🌸</div>
+                <div class="petal" style="top:30px;right:30px;font-size:50px;">🌹</div>
+                <div class="petal" style="bottom:35px;left:30px;font-size:50px;">🌸</div>
+                <div class="petal" style="bottom:20px;right:20px;font-size:65px;">🌹</div>
+                <div class="petal" style="top:50%;left:8px;font-size:35px;">🌺</div>
+                <div class="petal" style="top:30%;right:5px;font-size:35px;">🌺</div>
+
+                <div class="greeting-text" id="greetingDisplay">Good Morning</div>
+                <div class="divider-line" id="dividerDisplay"></div>
+                <div class="proverb-text" id="proverbDisplay">"Believe you can, and you're already halfway there."</div>
+                <div class="author-text" id="authorDisplay">— Theodore Roosevelt</div>
+            </div>
+
+            <div class="music-player" id="musicPlayer">
+                <audio id="audioPlayer" controls loop>
+                    <source id="audioSource" src="" type="audio/mpeg">
+                </audio>
+                <div class="music-info">
+                    <i class="fas fa-music"></i>
+                    <span id="musicFileName">No music loaded</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RIGHT: CONTROLS ===== -->
+        <div class="controls-section">
+            <h2>🎨 Customize</h2>
+            <p class="sub">Create your perfect greeting card</p>
+
+            <div class="form-group">
+                <label><i class="fas fa-heading"></i> Greeting Text</label>
+                <input type="text" id="greetingInput" value="Good Morning" />
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-quote-left"></i> Proverb / Quote</label>
+                <textarea id="proverbInput" rows="2">"Believe you can, and you're already halfway there."</textarea>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Author (optional)</label>
+                <input type="text" id="authorInput" value="— Theodore Roosevelt" />
+            </div>
+
+            <div class="color-row">
+                <div class="form-group">
+                    <label><i class="fas fa-palette"></i> Background</label>
+                    <input type="color" id="bgColor" value="#ffb6c1" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-font"></i> Text Color</label>
+                    <input type="color" id="textColor" value="#8B00FF" />
+                </div>
+            </div>
+
+            <div class="color-row">
+                <div class="form-group">
+                    <label><i class="fas fa-minus"></i> Divider Color</label>
+                    <input type="color" id="dividerColor" value="#8B00FF" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-edit"></i> Author Color</label>
+                    <input type="color" id="authorColor" value="#7B00E6" />
+                </div>
+            </div>
+
+            <div class="color-row">
+                <div class="form-group">
+                    <label><i class="fas fa-text-height"></i> Greeting Size: <span id="greetingSizeLabel">56</span>px</label>
+                    <input type="range" id="greetingSize" min="16" max="100" value="56" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-text-height"></i> Proverb Size: <span id="proverbSizeLabel">24</span>px</label>
+                    <input type="range" id="proverbSize" min="12" max="50" value="24" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-italic"></i> Text Styles</label>
+                <div class="style-buttons">
+                    <button id="styleBold" onclick="toggleStyle('bold')"><i class="fas fa-bold"></i> Bold</button>
+                    <button id="styleItalic" onclick="toggleStyle('italic')"><i class="fas fa-italic"></i> Italic</button>
+                    <button id="styleUnderline" onclick="toggleStyle('underline')"><i class="fas fa-underline"></i> Underline</button>
+                    <button id="styleUppercase" onclick="toggleStyle('uppercase')"><i class="fas fa-arrow-up"></i> UPPER</button>
+                    <button id="styleLowercase" onclick="toggleStyle('lowercase')"><i class="fas fa-arrow-down"></i> lower</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-music"></i> Background Music (MP3)</label>
+                <input type="file" id="musicUpload" accept=".mp3,.wav,.ogg" />
+                <div style="margin-top:6px;font-size:13px;color:#888;">
+                    <i class="fas fa-info-circle"></i> Upload MP3, WAV, or OGG file
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-image"></i> Background Image (optional)</label>
+                <input type="file" id="bgImageUpload" accept="image/*" />
+            </div>
+
+            <button class="btn-generate" id="generateBtn" onclick="generateImage()">
+                <i class="fas fa-wand-magic-sparkles"></i> Generate Image
+            </button>
+
+            <div class="action-buttons">
+                <button class="btn-download" onclick="downloadImage()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="btn-share" onclick="shareImage()">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+                <button class="btn-reset" onclick="resetAll()">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">✅ Success!</div>
+
+    <script>
+        // ===== DOM REFS =====
+        const card = document.getElementById('greetingCard');
+        const greetingDisplay = document.getElementById('greetingDisplay');
+        const proverbDisplay = document.getElementById('proverbDisplay');
+        const authorDisplay = document.getElementById('authorDisplay');
+        const dividerDisplay = document.getElementById('dividerDisplay');
+
+        const greetingInput = document.getElementById('greetingInput');
+        const proverbInput = document.getElementById('proverbInput');
+        const authorInput = document.getElementById('authorInput');
+        const bgColor = document.getElementById('bgColor');
+        const textColor = document.getElementById('textColor');
+        const dividerColor = document.getElementById('dividerColor');
+        const authorColor = document.getElementById('authorColor');
+        const greetingSize = document.getElementById('greetingSize');
+        const proverbSize = document.getElementById('proverbSize');
+        const greetingSizeLabel = document.getElementById('greetingSizeLabel');
+        const proverbSizeLabel = document.getElementById('proverbSizeLabel');
+        const bgImageUpload = document.getElementById('bgImageUpload');
+        const musicUpload = document.getElementById('musicUpload');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const audioSource = document.getElementById('audioSource');
+        const musicFileName = document.getElementById('musicFileName');
+        const generateBtn = document.getElementById('generateBtn');
+
+        let activeStyles = {
+            bold: false,
+            italic: false,
+            underline: false,
+            uppercase: false,
+            lowercase: false
+        };
+
+        function toggleStyle(style) {
+            activeStyles[style] = !activeStyles[style];
+            const btn = document.getElementById('style' + style.charAt(0).toUpperCase() + style.slice(1));
+            if (btn) btn.classList.toggle('active');
+            updateStyles();
+        }
+
+        function updateStyles() {
+            const display = greetingDisplay;
+            display.style.fontWeight = activeStyles.bold ? '900' : '700';
+            display.style.fontStyle = activeStyles.italic ? 'italic' : 'normal';
+            display.style.textDecoration = activeStyles.underline ? 'underline' : 'none';
+            display.style.textTransform = activeStyles.uppercase ? 'uppercase' : (activeStyles.lowercase ? 'lowercase' : 'none');
+
+            proverbDisplay.style.fontWeight = activeStyles.bold ? '800' : '600';
+            proverbDisplay.style.fontStyle = activeStyles.italic ? 'italic' : 'normal';
+            proverbDisplay.style.textDecoration = activeStyles.underline ? 'underline' : 'none';
+            proverbDisplay.style.textTransform = activeStyles.uppercase ? 'uppercase' : (activeStyles.lowercase ? 'lowercase' : 'none');
+        }
+
+        function updatePreview() {
+            greetingDisplay.textContent = greetingInput.value || 'Good Morning';
+            proverbDisplay.textContent = proverbInput.value || '"Believe you can, and you\'re already halfway there."';
+            authorDisplay.textContent = authorInput.value || '';
+
+            card.style.backgroundColor = bgColor.value;
+            greetingDisplay.style.color = textColor.value;
+            proverbDisplay.style.color = textColor.value;
+            dividerDisplay.style.backgroundColor = dividerColor.value;
+            authorDisplay.style.color = authorColor.value;
+
+            greetingDisplay.style.fontSize = greetingSize.value + 'px';
+            greetingSizeLabel.textContent = greetingSize.value;
+            proverbDisplay.style.fontSize = proverbSize.value + 'px';
+            proverbSizeLabel.textContent = proverbSize.value;
+
+            updateStyles();
+            updateBackgroundImage();
+        }
+
+        function updateBackgroundImage() {
+            if (bgImageUpload.files && bgImageUpload.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    card.style.backgroundImage = `url(${e.target.result})`;
+                    card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                };
+                reader.readAsDataURL(bgImageUpload.files[0]);
+            } else {
+                card.style.backgroundImage = 'none';
+            }
+        }
+
+        musicUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const url = URL.createObjectURL(file);
+                audioSource.src = url;
+                audioPlayer.load();
+                musicPlayer.classList.add('active');
+                musicFileName.textContent = file.name;
+                showToast('🎵 Music loaded: ' + file.name);
+                audioPlayer.oncanplaythrough = function() {
+                    audioPlayer.play().catch(() => {});
+                };
+            }
+        });
+
+        function generateImage() {
+            updatePreview();
+            generateBtn.innerHTML = '<span class="spinner" style="display:inline-block;"></span> Generating...';
+            generateBtn.disabled = true;
+
+            setTimeout(() => {
+                html2canvas(card, {
+                    scale: 2.5,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null,
+                    logging: false
+                }).then(canvas => {
+                    window.generatedCanvas = canvas;
+                    window.generatedImageData = canvas.toDataURL('image/png');
+                    generateBtn.innerHTML = '<i class="fas fa-check"></i> Image Generated!';
+                    generateBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+                    showToast('✅ Image generated successfully!');
+                    setTimeout(() => {
+                        generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
+                        generateBtn.style.background = '';
+                        generateBtn.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
+                    generateBtn.disabled = false;
+                    showToast('⚠️ Error generating image', true);
+                });
+            }, 300);
+        }
+
+        function downloadImage() {
+            if (window.generatedCanvas) {
+                const link = document.createElement('a');
+                link.download = 'greeting-card.png';
+                link.href = window.generatedImageData;
+                link.click();
+                showToast('📥 Image downloaded!');
+            } else {
+                showToast('⚠️ Generate the image first!', true);
+            }
+        }
+
+        function shareImage() {
+            if (window.generatedImageData) {
+                if (navigator.share) {
+                    fetch(window.generatedImageData)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'greeting-card.png', { type: 'image/png' });
+                            navigator.share({
+                                title: 'My Greeting Card',
+                                text: 'Check out my custom greeting card!',
+                                files: [file]
+                            }).catch(() => {});
+                        });
+                } else {
+                    const win = window.open();
+                    win.document.write(`<img src="${window.generatedImageData}" style="max-width:100%;" />`);
+                    showToast('📤 Right-click to save or share');
+                }
+            } else {
+                showToast('⚠️ Generate the image first!', true);
+            }
+        }
+
+        function resetAll() {
+            greetingInput.value = 'Good Morning';
+            proverbInput.value = '"Believe you can, and you\'re already halfway there."';
+            authorInput.value = '— Theodore Roosevelt';
+            bgColor.value = '#ffb6c1';
+            textColor.value = '#8B00FF';
+            dividerColor.value = '#8B00FF';
+            authorColor.value = '#7B00E6';
+            greetingSize.value = 56;
+            proverbSize.value = 24;
+            bgImageUpload.value = '';
+            musicUpload.value = '';
+            musicPlayer.classList.remove('active');
+            audioPlayer.pause();
+            card.style.backgroundImage = 'none';
+
+            Object.keys(activeStyles).forEach(key => {
+                activeStyles[key] = false;
+                const btn = document.getElementById('style' + key.charAt(0).toUpperCase() + key.slice(1));
+                if (btn) btn.classList.remove('active');
+            });
+
+            window.generatedCanvas = null;
+            window.generatedImageData = null;
+            updatePreview();
+            showToast('↺ Reset to default');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('input', updatePreview);
+        });
+
+        updatePreview();
+        console.log('🎨 Greeting Card Generator loaded!');
+    </script>
 </body>
 </html>
