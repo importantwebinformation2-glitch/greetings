@@ -1,825 +1,785 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎨 Custom Greeting Card Generator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Press — Greeting Card Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Dancing+Script:wght@600;700&family=Poppins:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F2A2E;
+    --panel:#153A3F;
+    --panel-2:#1B454B;
+    --gold:#D4A64A;
+    --gold-bright:#E8C06A;
+    --ivory:#F3EDE0;
+    --muted:#8FB0A8;
+    --line:rgba(243,237,224,0.12);
+    --danger:#C1652F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  .app{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    min-height:100vh;
+  }
+  @media (max-width:900px){
+    .app{grid-template-columns:1fr;}
+  }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            min-height: 100vh;
-            padding: 30px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
+  /* ---------- Header ---------- */
+  .brand{
+    grid-column:1 / -1;
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    padding:22px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand .seal{
+    width:34px;height:34px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 60%, #a8792f 100%);
+    box-shadow:0 2px 6px rgba(0,0,0,0.4);
+    flex:none;
+  }
+  .brand h1{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:0.3px;
+    margin:0;
+  }
+  .brand span{
+    color:var(--muted);
+    font-size:13px;
+    font-style:italic;
+  }
 
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 50px;
-            justify-content: center;
-            align-items: flex-start;
-        }
+  /* ---------- Control rail ---------- */
+  .rail{
+    background:var(--panel);
+    border-right:1px solid var(--line);
+    padding:24px 22px 60px;
+    overflow-y:auto;
+    max-height:calc(100vh - 80px);
+  }
+  .section{
+    margin-bottom:28px;
+  }
+  .section h2{
+    font-family:'Fraunces',serif;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1.6px;
+    color:var(--gold);
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section h2::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  label.field{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin:12px 0 6px;
+  }
+  input[type=text], textarea, select{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--ivory);
+    border-radius:8px;
+    padding:10px 11px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    resize:vertical;
+  }
+  textarea{min-height:64px; line-height:1.4;}
+  input[type=text]:focus, textarea:focus, select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+  .row{display:flex; gap:8px;}
+  .row > *{flex:1;}
 
-        .preview-section {
-            flex: 1 1 40%;
-            min-width: 350px;
-            max-width: 550px;
-        }
+  /* toggle buttons B/I/U */
+  .toggle-group{display:flex; gap:6px; margin-top:6px;}
+  .toggle-btn{
+    flex:1;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--ivory);
+    border-radius:6px;
+    padding:8px 0;
+    cursor:pointer;
+    font-size:14px;
+  }
+  .toggle-btn[aria-pressed="true"]{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:var(--ink);
+    font-weight:700;
+  }
+  .toggle-btn:focus-visible{outline:2px solid var(--gold-bright); outline-offset:2px;}
 
-        .preview-section h2 {
-            color: #fff;
-            margin-bottom: 15px;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+  input[type=range]{width:100%; accent-color:var(--gold);}
+  .range-label{display:flex; justify-content:space-between; font-size:11px; color:var(--muted);}
 
-        .preview-section h2 i {
-            color: #e94560;
-        }
+  /* swatches */
+  .swatches{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .swatch{
+    width:26px;height:26px;border-radius:50%;
+    border:2px solid transparent;
+    cursor:pointer;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.15) inset;
+  }
+  .swatch[aria-pressed="true"]{border-color:var(--ivory);}
+  .custom-color-wrap{display:flex; align-items:center; gap:10px; margin-top:10px;}
+  .custom-color-wrap input[type=color]{
+    width:36px;height:36px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;
+  }
+  .custom-color-wrap span{font-size:12px; color:var(--muted);}
 
-        .greeting-card {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-width: 550px;
-            margin: 0 auto 20px;
-            border-radius: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            border: 3px solid rgba(255, 255, 255, 0.08);
-            background-color: #ffb6c1;
-        }
+  /* upload zones */
+  .upload-zone{
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:14px;
+    text-align:center;
+    cursor:pointer;
+    background:var(--panel-2);
+    transition:border-color .15s;
+  }
+  .upload-zone:hover{border-color:var(--gold);}
+  .upload-zone input{display:none;}
+  .upload-zone p{margin:0; font-size:12.5px; color:var(--muted);}
+  .thumb-row{display:flex; align-items:center; gap:10px; margin-top:10px;}
+  .thumb-row img{width:52px;height:52px;object-fit:cover;border-radius:6px; border:1px solid var(--line);}
+  .thumb-row .meta{flex:1; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .remove-btn{
+    background:none; border:1px solid var(--line); color:var(--muted);
+    border-radius:6px; padding:4px 9px; font-size:11px; cursor:pointer;
+  }
+  .remove-btn:hover{color:var(--danger); border-color:var(--danger);}
+  .hint{font-size:11px; color:var(--muted); margin-top:6px; line-height:1.5;}
+  audio, video.preview-media{width:100%; margin-top:8px; border-radius:6px;}
 
-        .petal {
-            position: absolute;
-            font-size: 45px;
-            opacity: 0.12;
-            user-select: none;
-            pointer-events: none;
-        }
+  .checkbox-row{display:flex; align-items:center; gap:8px; margin-top:10px; font-size:12.5px; color:var(--muted);}
+  .checkbox-row input{accent-color:var(--gold);}
 
-        .greeting-text {
-            font-weight: 700;
-            z-index: 1;
-            line-height: 1.2;
-            word-wrap: break-word;
-            max-width: 90%;
-            color: #8B00FF;
-            font-size: 56px;
-        }
+  /* generate button — wax seal styled */
+  .generate-btn{
+    width:100%;
+    margin-top:6px;
+    padding:15px 0;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:var(--ink);
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:0.5px;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(212,166,74,0.35);
+  }
+  .generate-btn:active{transform:translateY(1px);}
 
-        .divider-line {
-            width: 80px;
-            height: 4px;
-            border-radius: 10px;
-            margin: 15px 0;
-            z-index: 1;
-            background-color: #8B00FF;
-        }
-
-        .proverb-text {
-            font-weight: 600;
-            z-index: 1;
-            line-height: 1.5;
-            max-width: 85%;
-            word-wrap: break-word;
-            color: #8B00FF;
-            font-size: 24px;
-        }
-
-        .author-text {
-            font-weight: 500;
-            margin-top: 10px;
-            opacity: 0.8;
-            z-index: 1;
-            color: #7B00E6;
-            font-size: 18px;
-        }
-
-        .controls-section {
-            flex: 1 1 40%;
-            min-width: 350px;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            padding: 30px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            max-height: 90vh;
-            overflow-y: auto;
-            align-self: flex-start;
-        }
-
-        .controls-section::-webkit-scrollbar {
-            width: 6px;
-        }
-        .controls-section::-webkit-scrollbar-thumb {
-            background: #e94560;
-            border-radius: 10px;
-        }
-
-        .controls-section h2 {
-            color: #fff;
-            font-size: 26px;
-            margin-bottom: 5px;
-        }
-
-        .controls-section .sub {
-            color: #aaa;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #ddd;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .form-group label i {
-            margin-right: 8px;
-            color: #e94560;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #e94560;
-            box-shadow: 0 0 20px rgba(233, 69, 96, 0.15);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 50px;
-        }
-
-        .form-group input[type="color"] {
-            padding: 4px;
-            height: 45px;
-            cursor: pointer;
-        }
-
-        .form-group input[type="range"] {
-            padding: 0;
-            accent-color: #e94560;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            -webkit-appearance: none;
-        }
-
-        .form-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #e94560;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
-        }
-
-        .form-group input[type="file"] {
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .form-group input[type="file"]::file-selector-button {
-            padding: 6px 16px;
-            background: #e94560;
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-            margin-right: 10px;
-        }
-
-        .color-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .color-row .form-group {
-            flex: 1;
-        }
-
-        .style-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .style-buttons button {
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: #ddd;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .style-buttons button:hover {
-            border-color: #e94560;
-            background: rgba(233, 69, 96, 0.1);
-        }
-
-        .style-buttons button.active {
-            border-color: #e94560;
-            background: rgba(233, 69, 96, 0.2);
-            color: #fff;
-        }
-
-        .btn-generate {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #e94560, #c23152);
-            border: none;
-            border-radius: 14px;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-generate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.3);
-        }
-
-        .btn-generate i {
-            margin-right: 10px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .action-buttons button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            color: #fff;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-download {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-        }
-
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-share {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-
-        .btn-share:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.3);
-        }
-
-        .btn-reset {
-            background: rgba(255, 255, 255, 0.1);
-            flex: 0.3;
-        }
-
-        .btn-reset:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .music-player {
-            margin-top: 15px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            display: none;
-        }
-
-        .music-player.active {
-            display: block;
-        }
-
-        .music-player audio {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        .music-info {
-            color: #aaa;
-            font-size: 13px;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2ecc71;
-            color: #fff;
-            padding: 15px 35px;
-            border-radius: 15px;
-            font-weight: 600;
-            box-shadow: 0 10px 40px rgba(46, 204, 113, 0.3);
-            opacity: 0;
-            transition: all 0.5s ease;
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.error {
-            background: #e74c3c;
-            box-shadow: 0 10px 40px rgba(231, 76, 60, 0.3);
-        }
-
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @media (max-width: 850px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
-                gap: 30px;
-            }
-            .preview-section {
-                flex: 1 1 100%;
-                max-width: 500px;
-                width: 100%;
-            }
-            .controls-section {
-                flex: 1 1 100%;
-                max-width: 100%;
-                width: 100%;
-                max-height: none;
-                align-self: auto;
-            }
-            .greeting-card {
-                max-width: 100%;
-            }
-            .greeting-text {
-                font-size: 36px;
-            }
-            .proverb-text {
-                font-size: 18px;
-            }
-            .greeting-card {
-                padding: 25px;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .greeting-text {
-                font-size: 26px;
-            }
-            .proverb-text {
-                font-size: 15px;
-            }
-            .greeting-card {
-                padding: 18px;
-                border-radius: 18px;
-            }
-            .controls-section {
-                padding: 18px;
-            }
-            .color-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            .action-buttons {
-                flex-direction: column;
-            }
-            body {
-                padding: 15px 10px;
-            }
-        }
-    </style>
+  /* ---------- Stage ---------- */
+  .stage{
+    padding:36px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:20px;
+  }
+  .canvas-frame{
+    background:repeating-conic-gradient(#0c2124 0% 25%, #0e2529 0% 50%) 0 0/18px 18px;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.45);
+    max-width:100%;
+  }
+  #cardCanvas{
+    display:block;
+    max-width:min(560px, 78vw);
+    height:auto;
+    border-radius:4px;
+    box-shadow:0 2px 18px rgba(0,0,0,0.5);
+  }
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+  }
+  .action-btn{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--ivory);
+    padding:11px 18px;
+    border-radius:8px;
+    font-size:13.5px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .action-btn:hover:not(:disabled){border-color:var(--gold); color:var(--gold-bright);}
+  .action-btn:disabled{opacity:0.4; cursor:not-allowed;}
+  .status{
+    font-size:12.5px;
+    color:var(--muted);
+    min-height:18px;
+    text-align:center;
+  }
+  select#aspect{margin-top:6px;}
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- PREVIEW -->
-        <div class="preview-section">
-            <h2><i class="fas fa-eye"></i> Live Preview</h2>
-            <div class="greeting-card" id="greetingCard">
-                <div class="petal" style="top:15px;left:20px;font-size:65px;">🌸</div>
-                <div class="petal" style="top:30px;right:30px;font-size:50px;">🌹</div>
-                <div class="petal" style="bottom:35px;left:30px;font-size:50px;">🌸</div>
-                <div class="petal" style="bottom:20px;right:20px;font-size:65px;">🌹</div>
-                <div class="petal" style="top:50%;left:8px;font-size:35px;">🌺</div>
-                <div class="petal" style="top:30%;right:5px;font-size:35px;">🌺</div>
+<div class="app">
+  <header class="brand">
+    <div class="seal"></div>
+    <h1>Card Press</h1>
+    <span>a small studio for greeting cards</span>
+  </header>
 
-                <div class="greeting-text" id="greetingDisplay">Good Morning</div>
-                <div class="divider-line" id="dividerDisplay"></div>
-                <div class="proverb-text" id="proverbDisplay">"Believe you can, and you're already halfway there."</div>
-                <div class="author-text" id="authorDisplay">— Theodore Roosevelt</div>
-            </div>
+  <aside class="rail">
 
-            <div class="music-player" id="musicPlayer">
-                <audio id="audioPlayer" controls loop>
-                    <source id="audioSource" src="" type="audio/mpeg">
-                </audio>
-                <div class="music-info">
-                    <i class="fas fa-music"></i>
-                    <span id="musicFileName">No music loaded</span>
-                </div>
-            </div>
-        </div>
+    <div class="section">
+      <h2>Words</h2>
+      <label class="field" for="titleInput">Greeting</label>
+      <input type="text" id="titleInput" maxlength="60" value="Good Morning" placeholder="Good Morning, Happy Birthday…">
 
-        <!-- CONTROLS -->
-        <div class="controls-section">
-            <h2>🎨 Customize</h2>
-            <p class="sub">Create your perfect greeting card</p>
-
-            <div class="form-group">
-                <label><i class="fas fa-heading"></i> Greeting Text</label>
-                <input type="text" id="greetingInput" value="Good Morning" />
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-quote-left"></i> Proverb / Quote</label>
-                <textarea id="proverbInput" rows="2">"Believe you can, and you're already halfway there."</textarea>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-user"></i> Author (optional)</label>
-                <input type="text" id="authorInput" value="— Theodore Roosevelt" />
-            </div>
-
-            <div class="color-row">
-                <div class="form-group">
-                    <label><i class="fas fa-palette"></i> Background</label>
-                    <input type="color" id="bgColor" value="#ffb6c1" />
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-font"></i> Text Color</label>
-                    <input type="color" id="textColor" value="#8B00FF" />
-                </div>
-            </div>
-
-            <div class="color-row">
-                <div class="form-group">
-                    <label><i class="fas fa-minus"></i> Divider Color</label>
-                    <input type="color" id="dividerColor" value="#8B00FF" />
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-user-edit"></i> Author Color</label>
-                    <input type="color" id="authorColor" value="#7B00E6" />
-                </div>
-            </div>
-
-            <div class="color-row">
-                <div class="form-group">
-                    <label><i class="fas fa-text-height"></i> Greeting Size: <span id="greetingSizeLabel">56</span>px</label>
-                    <input type="range" id="greetingSize" min="16" max="100" value="56" />
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-text-height"></i> Proverb Size: <span id="proverbSizeLabel">24</span>px</label>
-                    <input type="range" id="proverbSize" min="12" max="50" value="24" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-italic"></i> Text Styles</label>
-                <div class="style-buttons">
-                    <button id="styleBold" onclick="toggleStyle('bold')"><i class="fas fa-bold"></i> Bold</button>
-                    <button id="styleItalic" onclick="toggleStyle('italic')"><i class="fas fa-italic"></i> Italic</button>
-                    <button id="styleUnderline" onclick="toggleStyle('underline')"><i class="fas fa-underline"></i> Underline</button>
-                    <button id="styleUppercase" onclick="toggleStyle('uppercase')"><i class="fas fa-arrow-up"></i> UPPER</button>
-                    <button id="styleLowercase" onclick="toggleStyle('lowercase')"><i class="fas fa-arrow-down"></i> lower</button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-music"></i> Background Music (MP3)</label>
-                <input type="file" id="musicUpload" accept=".mp3,.wav,.ogg" />
-                <div style="margin-top:6px;font-size:13px;color:#888;">
-                    <i class="fas fa-info-circle"></i> Upload MP3, WAV, or OGG file
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-image"></i> Background Image (optional)</label>
-                <input type="file" id="bgImageUpload" accept="image/*" />
-            </div>
-
-            <button class="btn-generate" id="generateBtn" onclick="generateImage()">
-                <i class="fas fa-wand-magic-sparkles"></i> Generate Image
-            </button>
-
-            <div class="action-buttons">
-                <button class="btn-download" onclick="downloadImage()">
-                    <i class="fas fa-download"></i> Download
-                </button>
-                <button class="btn-share" onclick="shareImage()">
-                    <i class="fas fa-share-alt"></i> Share
-                </button>
-                <button class="btn-reset" onclick="resetAll()">
-                    <i class="fas fa-undo"></i>
-                </button>
-            </div>
-        </div>
+      <label class="field" for="proverbInput">Message or proverb</label>
+      <textarea id="proverbInput" maxlength="240" placeholder="A kind word or a favourite line goes here.">Every sunrise is a page still blank — write something good on it today.</textarea>
     </div>
 
-    <div class="toast" id="toast">✅ Success!</div>
+    <div class="section">
+      <h2>Typeface</h2>
+      <label class="field" for="fontFamily">Font family</label>
+      <select id="fontFamily">
+        <option value="'Fraunces',serif" selected>Fraunces (serif)</option>
+        <option value="'Playfair Display',serif">Playfair Display</option>
+        <option value="'Cormorant Garamond',serif">Cormorant Garamond</option>
+        <option value="'Dancing Script',cursive">Dancing Script (hand)</option>
+        <option value="'Poppins',sans-serif">Poppins (sans)</option>
+        <option value="Georgia,serif">Georgia</option>
+        <option value="'Courier New',monospace">Courier New</option>
+      </select>
 
-    <script>
-        // DOM REFS
-        const card = document.getElementById('greetingCard');
-        const greetingDisplay = document.getElementById('greetingDisplay');
-        const proverbDisplay = document.getElementById('proverbDisplay');
-        const authorDisplay = document.getElementById('authorDisplay');
-        const dividerDisplay = document.getElementById('dividerDisplay');
+      <label class="field">Greeting size — <span id="titleSizeVal">72</span>px</label>
+      <input type="range" id="titleSize" min="30" max="130" value="72">
+      <div class="toggle-group">
+        <button type="button" class="toggle-btn" id="titleBold" aria-pressed="true"><b>B</b></button>
+        <button type="button" class="toggle-btn" id="titleItalic" aria-pressed="false"><i>I</i></button>
+        <button type="button" class="toggle-btn" id="titleUnderline" aria-pressed="false"><u>U</u></button>
+      </div>
 
-        const greetingInput = document.getElementById('greetingInput');
-        const proverbInput = document.getElementById('proverbInput');
-        const authorInput = document.getElementById('authorInput');
-        const bgColor = document.getElementById('bgColor');
-        const textColor = document.getElementById('textColor');
-        const dividerColor = document.getElementById('dividerColor');
-        const authorColor = document.getElementById('authorColor');
-        const greetingSize = document.getElementById('greetingSize');
-        const proverbSize = document.getElementById('proverbSize');
-        const greetingSizeLabel = document.getElementById('greetingSizeLabel');
-        const proverbSizeLabel = document.getElementById('proverbSizeLabel');
-        const bgImageUpload = document.getElementById('bgImageUpload');
-        const musicUpload = document.getElementById('musicUpload');
-        const musicPlayer = document.getElementById('musicPlayer');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const audioSource = document.getElementById('audioSource');
-        const musicFileName = document.getElementById('musicFileName');
-        const generateBtn = document.getElementById('generateBtn');
+      <label class="field">Message size — <span id="proverbSizeVal">28</span>px</label>
+      <input type="range" id="proverbSize" min="14" max="56" value="28">
+      <div class="toggle-group">
+        <button type="button" class="toggle-btn" id="proverbBold" aria-pressed="false"><b>B</b></button>
+        <button type="button" class="toggle-btn" id="proverbItalic" aria-pressed="true"><i>I</i></button>
+        <button type="button" class="toggle-btn" id="proverbUnderline" aria-pressed="false"><u>U</u></button>
+      </div>
+    </div>
 
-        let activeStyles = {
-            bold: false,
-            italic: false,
-            underline: false,
-            uppercase: false,
-            lowercase: false
-        };
+    <div class="section">
+      <h2>Colour</h2>
+      <label class="field">Background</label>
+      <div class="swatches" id="bgSwatches"></div>
+      <div class="custom-color-wrap">
+        <input type="color" id="bgCustom" value="#F6E7C1">
+        <span>custom background</span>
+      </div>
 
-        function toggleStyle(style) {
-            activeStyles[style] = !activeStyles[style];
-            const btn = document.getElementById('style' + style.charAt(0).toUpperCase() + style.slice(1));
-            if (btn) btn.classList.toggle('active');
-            updateStyles();
+      <label class="field" style="margin-top:16px;">Text</label>
+      <div class="swatches" id="textSwatches"></div>
+      <div class="custom-color-wrap">
+        <input type="color" id="textCustom" value="#5B3A29">
+        <span>custom text colour</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Background image</h2>
+      <label class="upload-zone" id="imgDrop">
+        <input type="file" id="imgInput" accept="image/*">
+        <p>Click to upload a photo<br>(used behind your greeting)</p>
+      </label>
+      <div class="thumb-row" id="imgThumbRow" style="display:none;">
+        <img id="imgThumb" alt="">
+        <div class="meta" id="imgMeta"></div>
+        <button class="remove-btn" id="imgRemove">Remove</button>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="overlayToggle" checked>
+        <label for="overlayToggle">Darken image so text stays readable</label>
+      </div>
+      <input type="range" id="overlayOpacity" min="0" max="80" value="35">
+    </div>
+
+    <div class="section">
+      <h2>Music or video</h2>
+      <label class="upload-zone" id="mediaDrop">
+        <input type="file" id="mediaInput" accept="audio/*,video/*">
+        <p>Click to upload a song or clip<br>(plays behind the card, or exports into your video)</p>
+      </label>
+      <div id="mediaPreviewWrap" style="display:none;">
+        <div class="thumb-row">
+          <div class="meta" id="mediaMeta"></div>
+          <button class="remove-btn" id="mediaRemove">Remove</button>
+        </div>
+      </div>
+      <div class="hint">A still image can't carry sound. Upload music or a clip here and use <em>Download video</em> below to export a shareable video with it playing underneath your card.</div>
+    </div>
+
+    <div class="section">
+      <h2>Format</h2>
+      <label class="field" for="aspect">Canvas shape</label>
+      <select id="aspect">
+        <option value="square" selected>Square — Instagram post (1080×1080)</option>
+        <option value="story">Story / Reel (1080×1920)</option>
+        <option value="landscape">Landscape — banner (1200×630)</option>
+      </select>
+    </div>
+
+    <button class="generate-btn" id="generateBtn">✦ Generate card</button>
+  </aside>
+
+  <main class="stage">
+    <div class="canvas-frame">
+      <canvas id="cardCanvas" width="1080" height="1080"></canvas>
+    </div>
+    <div class="actions">
+      <button class="action-btn" id="downloadImgBtn">⬇ Download image</button>
+      <button class="action-btn" id="downloadVidBtn" disabled>⬇ Download video</button>
+      <button class="action-btn" id="shareBtn">↗ Share</button>
+    </div>
+    <div class="status" id="statusLine">Fill in your words on the left, then press Generate.</div>
+  </main>
+</div>
+
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+
+  const BG_PALETTE = ['#F6E7C1','#FCEEF0','#E8F2EE','#FFFFFF','#2F2A44','#1B2B34','#F3D9C4','#D7E4E5'];
+  const TEXT_PALETTE = ['#5B3A29','#8A3B3B','#2F2A44','#1B2B34','#FFFFFF','#D4A64A','#3A5A40','#000000'];
+
+  const ASPECTS = {
+    square:{w:1080,h:1080},
+    story:{w:1080,h:1920},
+    landscape:{w:1200,h:630}
+  };
+
+  const state = {
+    title:$('titleInput').value,
+    proverb:$('proverbInput').value,
+    fontFamily:$('fontFamily').value,
+    titleSize:+$('titleSize').value,
+    titleBold:true, titleItalic:false, titleUnderline:false,
+    proverbSize:+$('proverbSize').value,
+    proverbBold:false, proverbItalic:true, proverbUnderline:false,
+    bgColor:BG_PALETTE[0],
+    textColor:TEXT_PALETTE[0],
+    bgImage:null,
+    overlay:true,
+    overlayOpacity:35,
+    aspect:'square',
+    mediaFile:null,
+    mediaURL:null,
+    mediaType:null // 'audio' | 'video'
+  };
+
+  const canvas = $('cardCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // ---------- build palette swatches ----------
+  function buildSwatches(container, palette, onPick, initial){
+    palette.forEach((hex, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'swatch';
+      b.style.background = hex;
+      b.setAttribute('aria-pressed', hex.toLowerCase() === initial.toLowerCase() ? 'true' : 'false');
+      b.title = hex;
+      b.addEventListener('click', () => {
+        [...container.children].forEach(c => c.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        onPick(hex);
+        renderCard();
+      });
+      container.appendChild(b);
+    });
+  }
+  buildSwatches($('bgSwatches'), BG_PALETTE, (hex)=>{state.bgColor=hex; $('bgCustom').value=hex;}, state.bgColor);
+  buildSwatches($('textSwatches'), TEXT_PALETTE, (hex)=>{state.textColor=hex; $('textCustom').value=hex;}, state.textColor);
+
+  $('bgCustom').addEventListener('input', e => { state.bgColor = e.target.value; renderCard(); });
+  $('textCustom').addEventListener('input', e => { state.textColor = e.target.value; renderCard(); });
+
+  // ---------- text / typography inputs ----------
+  $('titleInput').addEventListener('input', e => { state.title = e.target.value; renderCard(); });
+  $('proverbInput').addEventListener('input', e => { state.proverb = e.target.value; renderCard(); });
+  $('fontFamily').addEventListener('change', e => { state.fontFamily = e.target.value; renderCard(); });
+
+  $('titleSize').addEventListener('input', e => {
+    state.titleSize = +e.target.value; $('titleSizeVal').textContent = e.target.value; renderCard();
+  });
+  $('proverbSize').addEventListener('input', e => {
+    state.proverbSize = +e.target.value; $('proverbSizeVal').textContent = e.target.value; renderCard();
+  });
+
+  function wireToggle(id, stateKey){
+    const btn = $(id);
+    btn.addEventListener('click', () => {
+      state[stateKey] = !state[stateKey];
+      btn.setAttribute('aria-pressed', state[stateKey] ? 'true' : 'false');
+      renderCard();
+    });
+  }
+  wireToggle('titleBold','titleBold');
+  wireToggle('titleItalic','titleItalic');
+  wireToggle('titleUnderline','titleUnderline');
+  wireToggle('proverbBold','proverbBold');
+  wireToggle('proverbItalic','proverbItalic');
+  wireToggle('proverbUnderline','proverbUnderline');
+
+  // ---------- background image upload ----------
+  $('imgInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      state.bgImage = img;
+      $('imgThumb').src = url;
+      $('imgMeta').textContent = file.name;
+      $('imgThumbRow').style.display = 'flex';
+      renderCard();
+    };
+    img.src = url;
+  });
+  $('imgRemove').addEventListener('click', () => {
+    state.bgImage = null;
+    $('imgInput').value = '';
+    $('imgThumbRow').style.display = 'none';
+    renderCard();
+  });
+  $('overlayToggle').addEventListener('change', e => { state.overlay = e.target.checked; renderCard(); });
+  $('overlayOpacity').addEventListener('input', e => { state.overlayOpacity = +e.target.value; renderCard(); });
+
+  // ---------- music / video upload ----------
+  let mediaEl = null; // the actual <audio> or <video> element used for playback + capture
+  $('mediaInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    if(state.mediaURL) URL.revokeObjectURL(state.mediaURL);
+    const url = URL.createObjectURL(file);
+    state.mediaFile = file;
+    state.mediaURL = url;
+    state.mediaType = file.type.startsWith('video') ? 'video' : 'audio';
+
+    const wrap = $('mediaPreviewWrap');
+    wrap.querySelectorAll('audio,video').forEach(el => el.remove());
+    mediaEl = document.createElement(state.mediaType === 'video' ? 'video' : 'audio');
+    mediaEl.src = url;
+    mediaEl.controls = true;
+    mediaEl.className = 'preview-media';
+    mediaEl.loop = false;
+    wrap.insertBefore(mediaEl, wrap.firstChild);
+    wrap.style.display = 'block';
+    $('mediaMeta').textContent = file.name + ' (' + state.mediaType + ')';
+    $('downloadVidBtn').disabled = false;
+  });
+  $('mediaRemove').addEventListener('click', () => {
+    if(state.mediaURL) URL.revokeObjectURL(state.mediaURL);
+    state.mediaFile = null; state.mediaURL = null; state.mediaType = null;
+    $('mediaInput').value = '';
+    $('mediaPreviewWrap').style.display = 'none';
+    $('mediaPreviewWrap').querySelectorAll('audio,video').forEach(el => el.remove());
+    mediaEl = null;
+    $('downloadVidBtn').disabled = true;
+  });
+
+  // ---------- aspect ----------
+  $('aspect').addEventListener('change', e => {
+    state.aspect = e.target.value;
+    const dims = ASPECTS[state.aspect];
+    canvas.width = dims.w; canvas.height = dims.h;
+    renderCard();
+  });
+
+  // ---------- drawing helpers ----------
+  function wrapText(text, x, y, maxWidth, lineHeight, underline){
+    const paragraphs = text.split('\n');
+    let curY = y;
+    paragraphs.forEach(para => {
+      const words = para.split(' ');
+      let line = '';
+      words.forEach(word => {
+        const test = line ? line + ' ' + word : word;
+        if(ctx.measureText(test).width > maxWidth && line){
+          drawLine(line, x, curY, underline);
+          curY += lineHeight;
+          line = word;
+        } else {
+          line = test;
         }
+      });
+      drawLine(line, x, curY, underline);
+      curY += lineHeight;
+    });
+    return curY;
+  }
+  function drawLine(line, x, y, underline){
+    ctx.fillText(line, x, y);
+    if(underline && line.trim()){
+      const w = ctx.measureText(line).width;
+      ctx.save();
+      ctx.strokeStyle = ctx.fillStyle;
+      ctx.lineWidth = Math.max(1, ctx.measureText('M').width * 0.04);
+      ctx.beginPath();
+      ctx.moveTo(x - w/2, y + 6);
+      ctx.lineTo(x + w/2, y + 6);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
 
-        function updateStyles() {
-            const display = greetingDisplay;
-            display.style.fontWeight = activeStyles.bold ? '900' : '700';
-            display.style.fontStyle = activeStyles.italic ? 'italic' : 'normal';
-            display.style.textDecoration = activeStyles.underline ? 'underline' : 'none';
-            display.style.textTransform = activeStyles.uppercase ? 'uppercase' : (activeStyles.lowercase ? 'lowercase' : 'none');
+  function drawLaurel(cx, cy, scale, color){
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.85;
+    [-1,1].forEach(dir => {
+      ctx.save();
+      ctx.scale(dir,1);
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.quadraticCurveTo(30*scale, -6*scale, 62*scale, 2*scale);
+      ctx.lineWidth = 2*scale;
+      ctx.stroke();
+      for(let i=1;i<=5;i++){
+        const t = i/6;
+        const lx = 62*scale*t;
+        const ly = -6*scale*Math.sin(t*Math.PI);
+        ctx.save();
+        ctx.translate(lx, ly);
+        ctx.rotate(-0.5 - t*0.4);
+        ctx.beginPath();
+        ctx.ellipse(0,0, 9*scale, 4*scale, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
+    });
+    ctx.restore();
+  }
 
-            proverbDisplay.style.fontWeight = activeStyles.bold ? '800' : '600';
-            proverbDisplay.style.fontStyle = activeStyles.italic ? 'italic' : 'normal';
-            proverbDisplay.style.textDecoration = activeStyles.underline ? 'underline' : 'none';
-            proverbDisplay.style.textTransform = activeStyles.uppercase ? 'uppercase' : (activeStyles.lowercase ? 'lowercase' : 'none');
+  function fontString(size, bold, italic, family){
+    return (italic?'italic ':'') + (bold?'700 ':'400 ') + size + 'px ' + family;
+  }
+
+  async function ensureFontsLoaded(){
+    try{
+      await Promise.all([
+        document.fonts.load(fontString(state.titleSize, state.titleBold, state.titleItalic, state.fontFamily)),
+        document.fonts.load(fontString(state.proverbSize, state.proverbBold, state.proverbItalic, state.fontFamily))
+      ]);
+    }catch(e){ /* fonts.load can throw on some family strings; ignore and draw anyway */ }
+  }
+
+  function drawCoverImage(img){
+    const cw = canvas.width, ch = canvas.height;
+    const ir = img.width / img.height, cr = cw / ch;
+    let sx,sy,sw,sh;
+    if(ir > cr){
+      sh = img.height; sw = sh * cr;
+      sx = (img.width - sw)/2; sy = 0;
+    } else {
+      sw = img.width; sh = sw / cr;
+      sx = 0; sy = (img.height - sh)/2;
+    }
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+  }
+
+  async function renderCard(){
+    await ensureFontsLoaded();
+    const cw = canvas.width, ch = canvas.height;
+    ctx.clearRect(0,0,cw,ch);
+
+    // background
+    if(state.bgImage){
+      drawCoverImage(state.bgImage);
+      if(state.overlay){
+        ctx.fillStyle = 'rgba(0,0,0,' + (state.overlayOpacity/100) + ')';
+        ctx.fillRect(0,0,cw,ch);
+      }
+    } else {
+      ctx.fillStyle = state.bgColor;
+      ctx.fillRect(0,0,cw,ch);
+    }
+
+    // engraved double-rule frame
+    const inset = cw * 0.045;
+    ctx.strokeStyle = state.textColor;
+    ctx.globalAlpha = 0.55;
+    ctx.lineWidth = Math.max(2, cw*0.0018);
+    ctx.strokeRect(inset, inset, cw-inset*2, ch-inset*2);
+    ctx.lineWidth = Math.max(1, cw*0.0008);
+    ctx.strokeRect(inset+10, inset+10, cw-(inset+10)*2, ch-(inset+10)*2);
+    ctx.globalAlpha = 1;
+
+    const centerX = cw/2;
+    ctx.textAlign = 'center';
+
+    // title
+    ctx.fillStyle = state.textColor;
+    ctx.font = fontString(state.titleSize, state.titleBold, state.titleItalic, state.fontFamily);
+    let titleY = ch * (state.aspect === 'landscape' ? 0.36 : 0.32);
+    titleY = wrapText(state.title, centerX, titleY, cw*0.8, state.titleSize*1.15, state.titleUnderline);
+
+    // laurel flourish beneath title
+    drawLaurel(centerX, titleY + cw*0.02, cw/1080, state.textColor);
+
+    // proverb
+    ctx.font = fontString(state.proverbSize, state.proverbBold, state.proverbItalic, state.fontFamily);
+    let proverbY = titleY + cw*0.12;
+    wrapText(state.proverb, centerX, proverbY, cw*0.68, state.proverbSize*1.4, state.proverbUnderline);
+  }
+
+  // ---------- Generate button ----------
+  $('generateBtn').addEventListener('click', async () => {
+    $('statusLine').textContent = 'Rendering your card…';
+    await renderCard();
+    $('statusLine').textContent = 'Card ready — download it or share it below.';
+  });
+
+  // initial paint
+  renderCard();
+
+  // ---------- Download image ----------
+  $('downloadImgBtn').addEventListener('click', () => {
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (state.title || 'greeting-card').replace(/[^a-z0-9]+/gi,'-').toLowerCase() + '.png';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }, 'image/png');
+  });
+
+  // ---------- Download video (card + uploaded music/video) ----------
+  $('downloadVidBtn').addEventListener('click', async () => {
+    if(!mediaEl){
+      $('statusLine').textContent = 'Upload music or a video clip first to export a video.';
+      return;
+    }
+    if(!('MediaRecorder' in window) || !canvas.captureStream){
+      $('statusLine').textContent = "This browser can't record video — try Chrome or Edge on desktop.";
+      return;
+    }
+    $('downloadVidBtn').disabled = true;
+    $('statusLine').textContent = 'Recording video… please keep this tab open.';
+
+    try{
+      const canvasStream = canvas.captureStream(30);
+      let audioStream = null;
+      if(mediaEl.captureStream) audioStream = mediaEl.captureStream();
+      else if(mediaEl.mozCaptureStream) audioStream = mediaEl.mozCaptureStream();
+
+      const tracks = [...canvasStream.getVideoTracks()];
+      if(audioStream) tracks.push(...audioStream.getAudioTracks());
+      const combined = new MediaStream(tracks);
+
+      let mimeType = 'video/webm;codecs=vp9,opus';
+      if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+      const recorder = new MediaRecorder(combined, {mimeType});
+      const chunks = [];
+      recorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+
+      const done = new Promise(resolve => { recorder.onstop = resolve; });
+
+      mediaEl.currentTime = 0;
+      await mediaEl.play();
+      recorder.start();
+
+      // keep re-drawing so the video track has continuous frames
+      let rafId;
+      const pump = () => { renderCard(); rafId = requestAnimationFrame(pump); };
+      pump();
+
+      const duration = Math.min(mediaEl.duration || 8, 30);
+      await new Promise(r => setTimeout(r, duration*1000));
+
+      cancelAnimationFrame(rafId);
+      mediaEl.pause();
+      recorder.stop();
+      await done;
+
+      const blob = new Blob(chunks, {type:'video/webm'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (state.title || 'greeting-card').replace(/[^a-z0-9]+/gi,'-').toLowerCase() + '.webm';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      $('statusLine').textContent = 'Video ready and downloaded.';
+    } catch(err){
+      console.error(err);
+      $('statusLine').textContent = 'Recording failed: ' + err.message;
+    } finally {
+      $('downloadVidBtn').disabled = false;
+    }
+  });
+
+  // ---------- Share ----------
+  $('shareBtn').addEventListener('click', () => {
+    canvas.toBlob(async blob => {
+      const file = new File([blob], 'greeting-card.png', {type:'image/png'});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        try{
+          await navigator.share({
+            files:[file],
+            title: state.title || 'A greeting for you',
+            text: state.proverb || ''
+          });
+          $('statusLine').textContent = 'Shared!';
+        }catch(err){
+          if(err.name !== 'AbortError') $('statusLine').textContent = 'Share cancelled or failed.';
         }
+      } else {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'greeting-card.png';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        $('statusLine').textContent = "Sharing isn't supported here, so the image downloaded instead — attach it in your social app.";
+      }
+    }, 'image/png');
+  });
 
-        function updatePreview() {
-            greetingDisplay.textContent = greetingInput.value || 'Good Morning';
-            proverbDisplay.textContent = proverbInput.value || '"Believe you can, and you\'re already halfway there."';
-            authorDisplay.textContent = authorInput.value || '';
-
-            card.style.backgroundColor = bgColor.value;
-            greetingDisplay.style.color = textColor.value;
-            proverbDisplay.style.color = textColor.value;
-            dividerDisplay.style.backgroundColor = dividerColor.value;
-            authorDisplay.style.color = authorColor.value;
-
-            greetingDisplay.style.fontSize = greetingSize.value + 'px';
-            greetingSizeLabel.textContent = greetingSize.value;
-            proverbDisplay.style.fontSize = proverbSize.value + 'px';
-            proverbSizeLabel.textContent = proverbSize.value;
-
-            updateStyles();
-            updateBackgroundImage();
-        }
-
-        function updateBackgroundImage() {
-            if (bgImageUpload.files && bgImageUpload.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    card.style.backgroundImage = `url(${e.target.result})`;
-                    card.style.backgroundSize = 'cover';
-                    card.style.backgroundPosition = 'center';
-                };
-                reader.readAsDataURL(bgImageUpload.files[0]);
-            } else {
-                card.style.backgroundImage = 'none';
-            }
-        }
-
-        musicUpload.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                const url = URL.createObjectURL(file);
-                audioSource.src = url;
-                audioPlayer.load();
-                musicPlayer.classList.add('active');
-                musicFileName.textContent = file.name;
-                showToast('🎵 Music loaded: ' + file.name);
-                audioPlayer.oncanplaythrough = function() {
-                    audioPlayer.play().catch(() => {});
-                };
-            }
-        });
-
-        function generateImage() {
-            updatePreview();
-            generateBtn.innerHTML = '<span class="spinner" style="display:inline-block;"></span> Generating...';
-            generateBtn.disabled = true;
-
-            setTimeout(() => {
-                html2canvas(card, {
-                    scale: 2.5,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: null,
-                    logging: false
-                }).then(canvas => {
-                    window.generatedCanvas = canvas;
-                    window.generatedImageData = canvas.toDataURL('image/png');
-                    generateBtn.innerHTML = '<i class="fas fa-check"></i> Image Generated!';
-                    generateBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
-                    showToast('✅ Image generated successfully!');
-                    setTimeout(() => {
-                        generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
-                        generateBtn.style.background = '';
-                        generateBtn.disabled = false;
-                    }, 2000);
-                }).catch(err => {
-                    generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
-                    generateBtn.disabled = false;
-                    showToast('⚠️ Error generating image', true);
-                });
-            }, 300);
-        }
-
-        function downloadImage() {
-            if (window.generatedCanvas) {
-                const link = document.createElement('a');
-                link.download = 'greeting-card.png';
-                link.href = window.generatedImageData;
-                link.click();
-                showToast('📥 Image downloaded!');
-            } else {
-                showToast('⚠️ Generate the image first!', true);
-            }
-        }
-
-        function shareImage() {
-            if (window.generatedImageData) {
-                if (navigator.share) {
-                    fetch(window.generatedImageData)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const file = new File([blob], 'greeting-card.png', { type: 'image/png' });
-                            navigator.share({
-                                title: 'My Greeting Card',
-                                text: 'Check out my custom greeting card!',
-                                files: [file]
-                            }).catch(() => {});
-                        });
-                } else {
-                    const win = window.open();
-                    win.document.write(`<img src="${window.generatedImageData}" style="max-width:100%;" />`);
-                    showToast('📤 Right-click to save or share');
-                }
-            } else {
-                showToast('⚠️ Generate the image first!', true);
-            }
-        }
-
-        function resetAll() {
-            greetingInput.value = 'Good Morning';
-            proverbInput.value = '"Believe you can, and you\'re already halfway there."';
-            authorInput.value = '— Theodore Roosevelt';
-            bgColor.value = '#ffb6c1';
-            textColor.value = '#8B00FF';
-            dividerColor.value = '#8B00FF';
-            authorColor.value = '#7B00E6';
-            greetingSize.value = 56;
-            proverbSize.value = 24;
-            bgImageUpload.value = '';
-            musicUpload.value = '';
-            musicPlayer.classList.remove('active');
-            audioPlayer.pause();
-            card.style.backgroundImage = 'none';
-
-            Object.keys(activeStyles).forEach(key => {
-                activeStyles[key] = false;
-                const btn = document.getElementById('style' + key.charAt(0).toUpperCase() + key.slice(1));
-                if (btn) btn.classList.remove('active');
-            });
-
-            window.generatedCanvas = null;
-            window.generatedImageData = null;
-            updatePreview();
-            showToast('↺ Reset to default');
-        }
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast' + (isError ? ' error' : '');
-            toast.classList.add('show');
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3500);
-        }
-
-        document.querySelectorAll('input, textarea').forEach(el => {
-            el.addEventListener('input', updatePreview);
-        });
-
-        updatePreview();
-        console.log('🎨 Greeting Card Generator loaded!');
-    </script>
+})();
+</script>
 </body>
 </html>
