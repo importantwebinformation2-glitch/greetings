@@ -600,13 +600,26 @@
     return (italic?'italic ':'') + (bold?'700 ':'400 ') + size + 'px ' + family;
   }
 
-  async function ensureFontsLoaded(){
-    try{
-      await Promise.all([
-        document.fonts.load(fontString(state.titleSize, state.titleBold, state.titleItalic, state.fontFamily)),
-        document.fonts.load(fontString(state.proverbSize, state.proverbBold, state.proverbItalic, state.fontFamily))
-      ]);
-    }catch(e){ /* fonts.load can throw on some family strings; ignore and draw anyway */ }
+  // Preload every selectable font ONCE at startup, at a spread of sizes/weights/styles,
+  // instead of awaiting document.fonts.load() on every single keystroke. Awaiting fonts
+  // per-render caused overlapping async renders to race each other: a stale render could
+  // finish drawing after a newer one, leaving the canvas (and any download taken from it)
+  // showing old or default content instead of what was just typed.
+  const FONT_FAMILIES = [...document.querySelectorAll('#fontFamily option')].map(o => o.value);
+  let fontsReady = null;
+  function preloadFonts(){
+    const jobs = [];
+    FONT_FAMILIES.forEach(fam => {
+      [30,72,130].forEach(size => {
+        [false,true].forEach(bold => {
+          [false,true].forEach(italic => {
+            try{ jobs.push(document.fonts.load(fontString(size,bold,italic,fam))); }catch(e){}
+          });
+        });
+      });
+    });
+    fontsReady = Promise.all(jobs).catch(()=>{});
+    return fontsReady;
   }
 
   function drawCoverImage(img){
@@ -623,8 +636,7 @@
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
   }
 
-  async function renderCard(){
-    await ensureFontsLoaded();
+  function renderCard(){
     const cw = canvas.width, ch = canvas.height;
     ctx.clearRect(0,0,cw,ch);
 
@@ -671,12 +683,17 @@
   // ---------- Generate button ----------
   $('generateBtn').addEventListener('click', async () => {
     $('statusLine').textContent = 'Rendering your card…';
-    await renderCard();
+    await fontsReady;
+    renderCard();
     $('statusLine').textContent = 'Card ready — download it or share it below.';
   });
 
-  // initial paint
-  renderCard();
+  // initial paint — wait for fonts once, then draw. All later edits redraw synchronously.
+  $('statusLine').textContent = 'Loading fonts…';
+  preloadFonts().then(() => {
+    renderCard();
+    $('statusLine').textContent = 'Fill in your words on the left, then press Generate.';
+  });
 
   // ---------- Download image ----------
   $('downloadImgBtn').addEventListener('click', () => {
@@ -704,16 +721,28 @@
 
     try{
       const canvasStream = canvas.captureStream(30);
+      const videoTracks = canvasStream.getVideoTracks();
+      if(!videoTracks.length){
+        $('statusLine').textContent = "This browser won't let us capture the canvas as video, so only audio could be recorded. Try Chrome on Android or desktop.";
+        $('downloadVidBtn').disabled = false;
+        return;
+      }
+
       let audioStream = null;
       if(mediaEl.captureStream) audioStream = mediaEl.captureStream();
       else if(mediaEl.mozCaptureStream) audioStream = mediaEl.mozCaptureStream();
 
-      const tracks = [...canvasStream.getVideoTracks()];
+      const tracks = [...videoTracks];
       if(audioStream) tracks.push(...audioStream.getAudioTracks());
       const combined = new MediaStream(tracks);
 
-      let mimeType = 'video/webm;codecs=vp9,opus';
-      if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+      const mimeCandidates = [
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm;codecs=vp8',
+        'video/webm'
+      ];
+      const mimeType = mimeCandidates.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
 
       const recorder = new MediaRecorder(combined, {mimeType});
       const chunks = [];
