@@ -374,9 +374,22 @@
       <button class="action-btn" id="shareBtn">↗ Share</button>
     </div>
     <div class="status" id="statusLine">Fill in your words on the left, then press Generate.</div>
+    <div id="debugBox" style="display:none; max-width:520px; background:#3a1414; border:1px solid #C1652F; color:#ffd9c4; font-size:12px; padding:10px 12px; border-radius:8px; white-space:pre-wrap; word-break:break-word;"></div>
   </main>
 </div>
 
+<script>
+(function(){
+  function showDebug(msg){
+    const box = document.getElementById('debugBox');
+    if(!box) return;
+    box.style.display = 'block';
+    box.textContent = 'Something went wrong:\n' + msg + '\n\nScreenshot this box and send it back.';
+  }
+  window.addEventListener('error', e => showDebug((e.error && e.error.stack) || e.message || String(e)));
+  window.addEventListener('unhandledrejection', e => showDebug((e.reason && (e.reason.stack || e.reason.message)) || String(e.reason)));
+})();
+</script>
 <script>
 (function(){
   const $ = (id) => document.getElementById(id);
